@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://spent-manager-react-app.herokuapp.com/")
 @RestController
 @RequestMapping("/spentmanager/spentcategory/")
 @Slf4j

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "https://spent-manager-react-app.herokuapp.com/")
+@CrossOrigin(origins = {"http://localhost:3000", "https://spent-manager-react-app.herokuapp.com/"})
 @RestController
 @RequestMapping("/spentmanager/spent/")
 @Slf4j

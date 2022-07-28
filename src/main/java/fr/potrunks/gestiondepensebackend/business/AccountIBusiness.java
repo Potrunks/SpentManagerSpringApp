@@ -35,4 +35,19 @@ public interface AccountIBusiness {
      * @return Return a Map of String (key) and Boolean (value) who contain the information of the step of the method
      */
     Map<String, Boolean> verifyIfThereAreAlready2Accounts(Map<String, Boolean> response);
+
+    /**
+     * Verify if an administrator account already exist in DB
+     * @return If exits, return true else false
+     */
+    Boolean verifyAdministratorAccountExist();
+
+    /**
+     * Allow to create admin account
+     * @param firstName Firstname of the user
+     * @param lastName Lastname of the user
+     * @param mail Mail of the user
+     * @param password Password of the user
+     */
+    Boolean createAdminAccount(String firstName, String lastName, String mail, String password);
 }

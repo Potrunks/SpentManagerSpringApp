@@ -19,4 +19,24 @@ public interface SpentCategoryIBusiness {
      * @return Return a List of Spent Category model
      */
     List<SpentCategory> getAll();
+
+    /**
+     * Check if spent category already exist in DB
+     * @param spentCategoryName Spent category wanted
+     * @return If existed, return true else false
+     */
+    Boolean verifySpentCategoryExist(String spentCategoryName);
+
+    /**
+     * Bring back all spent category name wanted
+     * @return A list of spent category name
+     */
+    List<String> getAllSpentCategoryNameWanted();
+
+    /**
+     * Create new spent categories
+     * @param spentCategoryNameList List of spent categories names
+     * @return If creation is a success, return true else false;
+     */
+    Boolean createNewSpentCategories(List<String> spentCategoryNameList);
 }

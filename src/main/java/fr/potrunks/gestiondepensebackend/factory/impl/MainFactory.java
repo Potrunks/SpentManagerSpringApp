@@ -34,10 +34,9 @@ public class MainFactory implements IMainFactory {
     }
 
     @Override
-    public void SpentCategoryFabricator() {
+    public void SpentCategoryFabricator(List<String> spentCategoryNameList) {
         log.warn("Start process spent category creation...");
-        List<String> spentCategoryList = spentCategoryBusiness.getAllSpentCategoryNameWanted();
-        spentCategoryBusiness.createNewSpentCategories(spentCategoryList);
+        spentCategoryBusiness.createNewSpentCategories(spentCategoryNameList);
         log.warn("End process spent category creation !!!");
     }
 }

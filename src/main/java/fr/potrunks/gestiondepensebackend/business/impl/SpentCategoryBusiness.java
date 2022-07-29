@@ -51,22 +51,6 @@ public class SpentCategoryBusiness implements SpentCategoryIBusiness {
     }
 
     @Override
-    public List<String> getAllSpentCategoryNameWanted() {
-        log.warn("Create list of spent category...");
-        List<String> categoryList = new ArrayList<>();
-        categoryList.add("Fast-Food");
-        categoryList.add("Essence");
-        categoryList.add("Courses");
-        categoryList.add("Energie");
-        categoryList.add("Multimedia");
-        categoryList.add("Restaurant");
-        categoryList.add("Impôt");
-        categoryList.add("Autre");
-        categoryList.add("Avance");
-        return categoryList;
-    }
-
-    @Override
     public Boolean createNewSpentCategories(List<String> spentCategoryNameList) {
         log.warn("Add list of spent category in the database...");
         Boolean success = true;

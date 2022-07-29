@@ -28,12 +28,6 @@ public interface SpentCategoryIBusiness {
     Boolean verifySpentCategoryExist(String spentCategoryName);
 
     /**
-     * Bring back all spent category name wanted
-     * @return A list of spent category name
-     */
-    List<String> getAllSpentCategoryNameWanted();
-
-    /**
      * Create new spent categories
      * @param spentCategoryNameList List of spent categories names
      * @return If creation is a success, return true else false;

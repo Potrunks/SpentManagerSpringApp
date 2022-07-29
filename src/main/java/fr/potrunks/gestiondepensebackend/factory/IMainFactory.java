@@ -1,5 +1,7 @@
 package fr.potrunks.gestiondepensebackend.factory;
 
+import java.util.List;
+
 public interface IMainFactory {
 
     /**
@@ -10,5 +12,5 @@ public interface IMainFactory {
     /**
      * Create all spent category for the app
      */
-    void SpentCategoryFabricator();
+    void SpentCategoryFabricator(List<String> spentCategoryNameList);
 }

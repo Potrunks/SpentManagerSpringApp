@@ -19,6 +19,8 @@ public class MonthlySpentEntity {
     private String nameMonthlySpent;
     @Column(name = "comment_monthly_spent")
     private String commentMonthlySpent;
+    @Column(name = "is_active")
+    private Boolean isActive;
     @ManyToOne
     @JoinColumn(name = "id_spent_category")
     private SpentCategoryEntity spentCategoryEntity;

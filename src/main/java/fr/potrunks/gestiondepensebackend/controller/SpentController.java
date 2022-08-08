@@ -45,7 +45,7 @@ public class SpentController {
         UserEntity userExpenser;
         SpentCategoryEntity spentCategorySelected;
         PeriodSpentEntity periodSpentInProgress;
-        SpentEntity newSpent;
+        List<SpentEntity> newSpentList;
         Boolean newSpentAdded = false;
         Boolean periodSpentInProgressExist = true;
         userExpenser = userIBusiness.findById(spent.getIdUserExpenser());
@@ -54,8 +54,10 @@ public class SpentController {
             if (spentCategorySelected.getIdSpentCategory() != null) {
                 periodSpentInProgress = periodSpentIBusiness.findInProgress();
                 if (periodSpentInProgress != null) {
-                    newSpent = spentBusiness.create(userExpenser, spentCategorySelected, periodSpentInProgress, spent);
-                    if (newSpent.getIdSpent() != null) {
+                    HashMap<SpentCategoryEntity, Spent> spentCategoryEntitySpentHashMap = new HashMap<>();
+                    spentCategoryEntitySpentHashMap.put(spentCategorySelected, spent);
+                    newSpentList = spentBusiness.create(userExpenser, periodSpentInProgress, spentCategoryEntitySpentHashMap);
+                    if (newSpentList.get(0).getIdSpent() != null) {
                         newSpentAdded = true;
                         log.info("New spent created successfully");
                     } else {

@@ -20,4 +20,5 @@ public class Spent {
     private String nameUserWhoCreate;
     private Long idSpentCategorySelected;
     private String nameSpentCategory;
+    private Long idMonthlySpent;
 }

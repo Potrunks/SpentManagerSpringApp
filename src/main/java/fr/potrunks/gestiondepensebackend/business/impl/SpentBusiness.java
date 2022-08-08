@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,10 +30,8 @@ public class SpentBusiness implements SpentIBusiness {
     private UserIRepository userIRepository;
     @Autowired
     private SpentCategoryIRepository spentCategoryIRepository;
-
-    public SpentBusiness(SpentIRepository spentRepository) {
-        this.spentRepository = spentRepository;
-    }
+    @Autowired
+    private MonthlySpentIRepository monthlySpentRepository;
 
     @Override
     public List<Spent> getSpentsByPeriodSpentInProgress() {
@@ -50,7 +50,9 @@ public class SpentBusiness implements SpentIBusiness {
                         null,
                         spent.getUserEntity().getFirstNameUser(),
                         null,
-                        spent.getSpentCategoryEntity().getNameSpentCategory()))
+                        spent.getSpentCategoryEntity().getNameSpentCategory(),
+                        spent.getMonthlySpentEntity().getIdMonthlySpent()
+                ))
                 .collect(Collectors.toList());
         return spents;
     }
@@ -89,24 +91,33 @@ public class SpentBusiness implements SpentIBusiness {
     }
 
     @Override
-    public SpentEntity create(UserEntity userConnected, SpentCategoryEntity spentCategorySelected, PeriodSpentEntity periodSpentInProgress, Spent spent) {
+    public List<SpentEntity> create(UserEntity userConnected, PeriodSpentEntity periodSpentInProgress, HashMap<SpentCategoryEntity, Spent> spentCategoryEntityKeySpentValuePairMap) {
         if (!userInPeriodSpentIsPresent(userConnected, periodSpentInProgress)) {
             log.warn("The user id {} is not present in period spent id {}", userConnected.getIdUser(), periodSpentInProgress.getIdPeriodSpent());
             saveSalary(createSalaryZeroValue(userConnected, periodSpentInProgress));
             addUserToPeriodSpent(userConnected, periodSpentInProgress);
         }
         log.info("Set up new spent in progress...");
-        SpentEntity spentEntity = new SpentEntity();
-        spentEntity.setValueSpent(spent.getValueSpent());
-        spentEntity.setDateSpent(LocalDate.now());
-        spentEntity.setNameSpent(formatSpentName(spent));
-        spentEntity.setCommentSpent(spent.getCommentSpent());
-        spentEntity.setSpentCategoryEntity(spentCategorySelected);
-        spentEntity.setUserEntity(userConnected);
-        spentEntity.setPeriodSpentEntity(periodSpentInProgress);
+        List<SpentEntity> spentEntityList = new ArrayList<>();
+        for (Map.Entry<SpentCategoryEntity, Spent> spentCategoryEntityKeySpentValuePair : spentCategoryEntityKeySpentValuePairMap.entrySet()) {
+            SpentEntity spentEntity = new SpentEntity();
+            spentEntity.setValueSpent(spentCategoryEntityKeySpentValuePair.getValue().getValueSpent());
+            spentEntity.setDateSpent(LocalDate.now());
+            spentEntity.setNameSpent(formatSpentName(spentCategoryEntityKeySpentValuePair.getValue()));
+            spentEntity.setCommentSpent(spentCategoryEntityKeySpentValuePair.getValue().getCommentSpent());
+            spentEntity.setSpentCategoryEntity(spentCategoryEntityKeySpentValuePair.getKey());
+            spentEntity.setUserEntity(userConnected);
+            spentEntity.setPeriodSpentEntity(periodSpentInProgress);
+            if (spentCategoryEntityKeySpentValuePair.getValue().getIdMonthlySpent() != null) {
+                spentEntity.setMonthlySpentEntity(monthlySpentRepository.getById(spentCategoryEntityKeySpentValuePair.getValue().getIdMonthlySpent()));
+            } else {
+                spentEntity.setMonthlySpentEntity(null);
+            }
+            spentEntityList.add(spentEntity);
+        }
         log.info("Add new spent in database");
-        spentEntity = spentRepository.save(spentEntity);
-        return spentEntity;
+        spentEntityList = spentRepository.saveAll(spentEntityList);
+        return spentEntityList;
     }
 
     @Override
@@ -125,7 +136,9 @@ public class SpentBusiness implements SpentIBusiness {
                         null,
                         spent.getUserEntity().getFirstNameUser(),
                         null,
-                        spent.getSpentCategoryEntity().getNameSpentCategory()))
+                        spent.getSpentCategoryEntity().getNameSpentCategory(),
+                        spent.getMonthlySpentEntity().getIdMonthlySpent()
+                ))
                 .collect(Collectors.toList());
         return spents;
     }

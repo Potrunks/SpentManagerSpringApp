@@ -12,4 +12,7 @@ public class MonthlySpent {
     private Float valueMonthlySpent;
     private String nameMonthlySpent;
     private String commentMonthlySpent;
+    private Long idSpentCategorySelected;
+    private Boolean isActive;
+    private Long idUserCreator;
 }

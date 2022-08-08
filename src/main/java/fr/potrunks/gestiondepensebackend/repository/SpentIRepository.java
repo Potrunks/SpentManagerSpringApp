@@ -1,9 +1,6 @@
 package fr.potrunks.gestiondepensebackend.repository;
 
-import fr.potrunks.gestiondepensebackend.entity.PeriodSpentEntity;
-import fr.potrunks.gestiondepensebackend.entity.SpentCategoryEntity;
-import fr.potrunks.gestiondepensebackend.entity.SpentEntity;
-import fr.potrunks.gestiondepensebackend.entity.UserEntity;
+import fr.potrunks.gestiondepensebackend.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -51,4 +48,12 @@ public interface SpentIRepository extends JpaRepository<SpentEntity, Long> {
      * @return List of spent during a period of spent
      */
     List<SpentEntity> findByPeriodSpentEntity(PeriodSpentEntity periodSpentEntity);
+
+    /**
+     * Find a spent entity in a period spent wanted and correspondaing to a monthly spent wanted
+     * @param periodSpentEntity
+     * @param monthlySpentEntity
+     * @return A spent entity with the criteria or null if not found
+     */
+    SpentEntity findByPeriodSpentEntityAndMonthlySpentEntity(PeriodSpentEntity periodSpentEntity, MonthlySpentEntity monthlySpentEntity);
 }

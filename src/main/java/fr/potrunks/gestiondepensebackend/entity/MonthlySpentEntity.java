@@ -1,12 +1,16 @@
 package fr.potrunks.gestiondepensebackend.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "monthly_spent")
 public class MonthlySpentEntity {
     @Id

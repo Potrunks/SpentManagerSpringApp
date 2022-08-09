@@ -9,9 +9,9 @@ import fr.potrunks.gestiondepensebackend.model.User;
 import fr.potrunks.gestiondepensebackend.repository.MonthlySpentIRepository;
 import fr.potrunks.gestiondepensebackend.repository.SpentCategoryIRepository;
 import fr.potrunks.gestiondepensebackend.repository.UserIRepository;
+import fr.potrunks.gestiondepensebackend.utils.impl.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-public class MonthlySpentBusinessTests {
+public class MonthlySpentBusinessTests extends TestUtils {
 
     private User userConnected;
     private MonthlySpent monthlySpentToCreate;
@@ -44,18 +44,10 @@ public class MonthlySpentBusinessTests {
 
     @BeforeEach()
     void setup() {
-        UserEntity newUserEntityForTest = new UserEntity();
-        newUserEntityForTest = userRepository.save(newUserEntityForTest);
-
-        SpentCategoryEntity newSpentCategoryForTest = new SpentCategoryEntity();
-        newSpentCategoryForTest.setNameSpentCategory("Entretien");
-        newSpentCategoryForTest = spentCategoryRepository.save(newSpentCategoryForTest);
-
-        userConnected = new User();
-        userConnected.setIdUser(newUserEntityForTest.getIdUser());
-
-        monthlySpentToCreate = new MonthlySpent(
-                null,
+        UserEntity newUserEntityForTest = createUserEntityForTest();
+        SpentCategoryEntity newSpentCategoryForTest = createSpentCategoryEntityForTest("Entretien");
+        userConnected = createUserModelForTest(newUserEntityForTest.getIdUser());
+        monthlySpentToCreate = createMonthlySpentModelForTest(
                 1000000f,
                 "Entretien Enclos TRex",
                 "J'ai dépensé sans compter",
@@ -73,31 +65,73 @@ public class MonthlySpentBusinessTests {
 
     @Test
     void shouldReturnErrorMessageNull_WhenModifyMonthlySpentWithoutError() {
-        MonthlySpentEntity monthlySpentOrigin = createMonthlySpentOriginal();
-        MonthlySpent monthlySpentModified = modifyMonthlySpent(monthlySpentOrigin.getIdMonthlySpent(), 10f, "Dommage et interet accident parc", "Les raptors ont bouffé tout le monde", monthlySpentOrigin.getSpentCategoryEntity().getIdSpentCategory(), monthlySpentOrigin.getIsActive());
+        MonthlySpentEntity monthlySpentOrigin = createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
+        MonthlySpent monthlySpentModified = modifyMonthlySpentModelForTest(
+                monthlySpentOrigin.getIdMonthlySpent(),
+                10f,
+                "Dommage et interet accident parc",
+                "Les raptors ont bouffé tout le monde",
+                monthlySpentOrigin.getSpentCategoryEntity().getIdSpentCategory(),
+                monthlySpentOrigin.getIsActive(),
+                userConnected.getIdUser());
         String result = monthlySpentBusiness.updateMonthlySpent(monthlySpentModified);
         assertNull(result);
     }
 
     @Test
     void shouldReturnDifferentData_WhenModifyMonthlySpentWithoutError() {
-        MonthlySpentEntity monthlySpentOrigin = createMonthlySpentOriginal();
+        MonthlySpentEntity monthlySpentOrigin = createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         Integer monthlySpentBeforeModification = monthlySpentOrigin.hashCode();
-        MonthlySpent monthlySpentModified = modifyMonthlySpent(monthlySpentOrigin.getIdMonthlySpent(), 10f, "Dommage et interet accident parc", "Les raptors ont bouffé tout le monde", monthlySpentOrigin.getSpentCategoryEntity().getIdSpentCategory(), monthlySpentOrigin.getIsActive());
+        MonthlySpent monthlySpentModified = modifyMonthlySpentModelForTest(
+                monthlySpentOrigin.getIdMonthlySpent(),
+                10f,
+                "Dommage et interet accident parc",
+                "Les raptors ont bouffé tout le monde",
+                monthlySpentOrigin.getSpentCategoryEntity().getIdSpentCategory(),
+                monthlySpentOrigin.getIsActive(),
+                userConnected.getIdUser());
         monthlySpentBusiness.updateMonthlySpent(monthlySpentModified);
         assertNotEquals(monthlySpentBeforeModification, monthlySpentRepository.getById(monthlySpentModified.getIdMonthlySpent()).hashCode());
     }
 
     @Test
     void shouldReturnErrorMessageNull_WhenDeleteMonthlySpentWithoutError() {
-        MonthlySpentEntity monthlySpentToDelete = createMonthlySpentOriginal();
+        MonthlySpentEntity monthlySpentToDelete = createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         String result = monthlySpentBusiness.deleteMonthlySpentById(monthlySpentToDelete.getIdMonthlySpent());
         assertNull(result);
     }
 
     @Test
     void shouldReturnNotFoundMessageFromDataBase_WhenDeleteMonthlySpentWithoutError() {
-        MonthlySpentEntity monthlySpentToDelete = createMonthlySpentOriginal();
+        MonthlySpentEntity monthlySpentToDelete = createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         Long idMonthlySpentToDelete = monthlySpentToDelete.getIdMonthlySpent();
         monthlySpentBusiness.deleteMonthlySpentById(monthlySpentToDelete.getIdMonthlySpent());
         String result = "Found";
@@ -111,7 +145,14 @@ public class MonthlySpentBusinessTests {
 
     @Test
     void shouldReturnMoreThanZeroCount_WhenGetAllMonthlySpentOfUserWithMonthlySpent() {
-        createMonthlySpentOriginal();
+        createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         List<MonthlySpent> result = monthlySpentBusiness.getAllByIdUser(userConnected.getIdUser());
         assertTrue(result.size() > 0);
     }
@@ -124,21 +165,42 @@ public class MonthlySpentBusinessTests {
 
     @Test
     void shouldReturnNull_WhenGetAllMonthlySpentOfUserNull() {
-        createMonthlySpentOriginal();
+        createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         List<MonthlySpent> result = monthlySpentBusiness.getAllByIdUser(null);
         assertNull(result);
     }
 
     @Test
     void shouldReturnNull_WhenGetMonthlySpentByIdMonthlySpentNull() {
-        createMonthlySpentOriginal();
+        createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         MonthlySpent result = monthlySpentBusiness.getById(null);
         assertNull(result);
     }
 
     @Test
     void shouldReturnNull_WhenGetMonthlySpentByIdMonthlySpentNotExistInDataBase() {
-        createMonthlySpentOriginal();
+        createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         List<MonthlySpentEntity> monthlySpentEntityList = monthlySpentRepository.findAll();
         List<Long> idMonthlySpentEntityList = new ArrayList<>();
         for (MonthlySpentEntity monthlySpentEntity : monthlySpentEntityList) {
@@ -159,8 +221,15 @@ public class MonthlySpentBusinessTests {
 
     @Test
     void shouldReturnMonthlySpent_WhenGetMonthlySpentByIdMonthlySpentExistInDataBase() {
-        MonthlySpentEntity monthlySpentEntity = createMonthlySpentOriginal();
-        MonthlySpent monthlySpent = entityToModel(monthlySpentEntity);
+        MonthlySpentEntity monthlySpentEntity = createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
+        MonthlySpent monthlySpent = monthlySpentEntityToModel(monthlySpentEntity);
         MonthlySpent result = monthlySpentBusiness.getById(monthlySpentEntity.getIdMonthlySpent());
         assertEquals(monthlySpent, result);
     }
@@ -168,8 +237,15 @@ public class MonthlySpentBusinessTests {
     @Test
     void shouldReturnNoErrorMessage_WhenMonthlySpentTransformingInSpentSuccessfully() {
         periodSpentBusiness.addNewPeriodSpent(userConnected.getIdUser(), new HashMap<String, Object>());
-        MonthlySpentEntity monthlySpentEntity = createMonthlySpentOriginal();
-        MonthlySpent monthlySpent = entityToModel(monthlySpentEntity);
+        MonthlySpentEntity monthlySpentEntity = createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
+        MonthlySpent monthlySpent = monthlySpentEntityToModel(monthlySpentEntity);
         List<MonthlySpent> monthlySpentList = new ArrayList<>();
         monthlySpentList.add(monthlySpent);
         String result = monthlySpentBusiness.becomeSpent(monthlySpentList, userConnected.getIdUser());
@@ -178,8 +254,15 @@ public class MonthlySpentBusinessTests {
 
     @Test
     void shouldReturnErrorMessage_WhenIdUserTransformingMonthlySpentToSpentNotExist() {
-        MonthlySpentEntity monthlySpentEntity = createMonthlySpentOriginal();
-        MonthlySpent monthlySpent = entityToModel(monthlySpentEntity);
+        MonthlySpentEntity monthlySpentEntity = createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
+        MonthlySpent monthlySpent = monthlySpentEntityToModel(monthlySpentEntity);
         List<UserEntity> userEntityList = userRepository.findAll();
         List<Long> idUserEntityList = new ArrayList<>();
         for (UserEntity userEntity : userEntityList) {
@@ -202,7 +285,14 @@ public class MonthlySpentBusinessTests {
 
     @Test
     void shouldReturnErrorMessage_WhenMonthlySpentToTransformedToSpentNotExist() {
-        createMonthlySpentOriginal();
+        createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         List<MonthlySpentEntity> monthlySpentEntityList = monthlySpentRepository.findAll();
         List<Long> idMonthlySpentEntityList = new ArrayList<>();
         for (MonthlySpentEntity mse : monthlySpentEntityList) {
@@ -227,50 +317,32 @@ public class MonthlySpentBusinessTests {
 
     @Test
     void shouldReturnErrorMessage_WhenMonthlySpentToTransformedToSpentIsNull() {
-        createMonthlySpentOriginal();
+        createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
         String result = monthlySpentBusiness.becomeSpent(null, userConnected.getIdUser());
         assertEquals("Impossible d'ajouter la dépense mensuelle aux dépenses", result);
     }
 
     @Test
     void shouldReturnErrorMessage_WhenIdUserTransformingMonthlySpentToSpentIsNull() {
-        MonthlySpentEntity monthlySpentEntity = createMonthlySpentOriginal();
-        MonthlySpent monthlySpent = entityToModel(monthlySpentEntity);
+        MonthlySpentEntity monthlySpentEntity = createMonthlySpentEntityForTest(
+                monthlySpentToCreate.getValueMonthlySpent(),
+                monthlySpentToCreate.getNameMonthlySpent(),
+                monthlySpentToCreate.getCommentMonthlySpent(),
+                spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()),
+                userRepository.getById(userConnected.getIdUser()),
+                monthlySpentToCreate.getIsActive()
+        );
+        MonthlySpent monthlySpent = monthlySpentEntityToModel(monthlySpentEntity);
         List<MonthlySpent> monthlySpentList = new ArrayList<>();
         monthlySpentList.add(monthlySpent);
         String result = monthlySpentBusiness.becomeSpent(monthlySpentList, null);
         assertEquals("Utilisateur non connecté", result);
-    }
-
-    private MonthlySpent modifyMonthlySpent(Long monthlySpentOriginId, float valueMonthlySpent, String nameMonthlySpent, String commentMonthlySpent, Long idSpentCategory, Boolean isActive) {
-        MonthlySpent monthlySpentModified = new MonthlySpent(
-                monthlySpentOriginId,
-                valueMonthlySpent,
-                nameMonthlySpent,
-                commentMonthlySpent,
-                idSpentCategory,
-                isActive,
-                userConnected.getIdUser()
-        );
-        return monthlySpentModified;
-    }
-
-    private MonthlySpentEntity createMonthlySpentOriginal() {
-        MonthlySpentEntity monthlySpentOrigin = new MonthlySpentEntity();
-        monthlySpentOrigin.setValueMonthlySpent(monthlySpentToCreate.getValueMonthlySpent());
-        monthlySpentOrigin.setNameMonthlySpent(monthlySpentToCreate.getNameMonthlySpent());
-        monthlySpentOrigin.setCommentMonthlySpent(monthlySpentToCreate.getCommentMonthlySpent());
-        monthlySpentOrigin.setSpentCategoryEntity(spentCategoryRepository.getById(monthlySpentToCreate.getIdSpentCategorySelected()));
-        monthlySpentOrigin.setUserEntity(userRepository.getById(userConnected.getIdUser()));
-        monthlySpentOrigin.setIsActive(monthlySpentToCreate.getIsActive());
-        return monthlySpentRepository.save(monthlySpentOrigin);
-    }
-
-    private MonthlySpent entityToModel(MonthlySpentEntity monthlySpentEntity) {
-        MonthlySpent monthlySpent = new MonthlySpent();
-        BeanUtils.copyProperties(monthlySpentEntity, monthlySpent);
-        monthlySpent.setIdSpentCategorySelected(monthlySpentEntity.getSpentCategoryEntity().getIdSpentCategory());
-        monthlySpent.setIdUserCreator(monthlySpentEntity.getUserEntity().getIdUser());
-        return monthlySpent;
     }
 }

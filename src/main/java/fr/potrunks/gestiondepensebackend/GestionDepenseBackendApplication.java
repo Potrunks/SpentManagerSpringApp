@@ -1,6 +1,7 @@
 package fr.potrunks.gestiondepensebackend;
 
-import fr.potrunks.gestiondepensebackend.factory.IMainFactory;
+import fr.potrunks.gestiondepensebackend.factory.IAccountFactory;
+import fr.potrunks.gestiondepensebackend.factory.ISpentCategoryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,17 +20,15 @@ public class GestionDepenseBackendApplication {
 	}
 
 	@Bean
-	CommandLineRunner run(IMainFactory mainFactory) {
+	CommandLineRunner run(IAccountFactory accountFactory, ISpentCategoryFactory spentCategoryFactory) {
 		return args -> {
 			log.warn("Start launch all running method...");
 
-			mainFactory.AdministratorAccountFabricator("Alexis", "ARRIAL", "potrunks@hotmail.com", "Trunks92!");
+			accountFactory.AdministratorAccountFabricator("Alexis", "ARRIAL", "potrunks@hotmail.com", "Trunks92!");
 
 			List<String> spentCategoryNameListToAdd = new ArrayList<>();
-			spentCategoryNameListToAdd.add("Crédit");
-			spentCategoryNameListToAdd.add("Assurance");
-			spentCategoryNameListToAdd.add("Vacance");
-			mainFactory.SpentCategoryFabricator(spentCategoryNameListToAdd);
+			spentCategoryNameListToAdd.add("Remboursement partiel");
+			spentCategoryFactory.SpentCategoryFabricator(spentCategoryNameListToAdd);
 
 			log.warn("End of all running method");
 		};

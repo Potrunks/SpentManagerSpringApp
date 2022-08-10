@@ -1,22 +1,17 @@
 package fr.potrunks.gestiondepensebackend.factory.impl;
 
 import fr.potrunks.gestiondepensebackend.business.AccountIBusiness;
-import fr.potrunks.gestiondepensebackend.business.SpentCategoryIBusiness;
-import fr.potrunks.gestiondepensebackend.factory.IMainFactory;
+import fr.potrunks.gestiondepensebackend.factory.IAccountFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @Slf4j
-public class MainFactory implements IMainFactory {
+public class AccountFactory implements IAccountFactory {
 
     @Autowired
     private AccountIBusiness accountBusiness;
-    @Autowired
-    private SpentCategoryIBusiness spentCategoryBusiness;
 
     @Override
     public void AdministratorAccountFabricator(String firstName, String lastName, String mail, String password) {
@@ -31,12 +26,5 @@ public class MainFactory implements IMainFactory {
             }
         }
         log.warn("End process administrator account creation !!!");
-    }
-
-    @Override
-    public void SpentCategoryFabricator(List<String> spentCategoryNameList) {
-        log.warn("Start process spent category creation...");
-        spentCategoryBusiness.createNewSpentCategories(spentCategoryNameList);
-        log.warn("End process spent category creation !!!");
     }
 }

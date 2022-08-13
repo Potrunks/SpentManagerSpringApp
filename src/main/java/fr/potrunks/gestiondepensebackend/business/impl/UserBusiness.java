@@ -120,10 +120,32 @@ public class UserBusiness implements UserIBusiness {
             user.setRateSpent(calculateRateSpent(user.getValueSalary(), user.getValueSpents()));
             Float householdShare = calculateHouseholdShare(sumSalaryHousehold(periodSpentEntity), user.getValueSalary());
             Float shareSpent = calculateShareSpent(sumSpentsDuringPeriodSpent(periodSpentEntity), householdShare);
-            user.setValueDebt(calculateDebt(shareSpent, user.getValueSpents(), calculateUserDepositDuringPeriodSpent(periodSpentEntity, userEntity), sumDepositsDuringPeriodSpent(periodSpentEntity)));
+            Float partialRepayment = sumPartialRepayment(userEntity, periodSpentEntity);
+            user.setValueDebt(calculateDebt(shareSpent, user.getValueSpents(), calculateUserDepositDuringPeriodSpent(periodSpentEntity, userEntity), sumDepositsDuringPeriodSpent(periodSpentEntity), partialRepayment));
             userList.add(user);
         }
         return userList;
+    }
+
+    /**
+     * Make the sum of all partial repayment made for the user
+     */
+    private Float sumPartialRepayment(UserEntity userEntity, PeriodSpentEntity periodSpentEntity) {
+        /**
+         * Get all repayment not from the user in the period spent
+         * Sum all
+         */
+
+        SpentCategoryEntity spentCategoryEntity = spentCategoryIRepository.findByNameSpentCategory("Remboursement partiel");
+        List<SpentEntity> spentEntityList = spentIRepository.findByUserEntityAndPeriodSpentEntityAndSpentCategoryEntity(userEntity, periodSpentEntity, spentCategoryEntity);
+        Float sum = 0f;
+        if (spentEntityList != null || spentEntityList.size() != 0) {
+            for (SpentEntity spentEntity:
+                 spentEntityList) {
+                sum += spentEntity.getValueSpent();
+            }
+        }
+        return sum;
     }
 
     /**
@@ -290,14 +312,8 @@ public class UserBusiness implements UserIBusiness {
 
     /**
      * Calculate the debt
-     *
-     * @param shareSpent
-     * @param spentAlreadyPaid
-     * @param depositDone
-     * @param allDeposits
-     * @return Return a Float with debt value
      */
-    public Float calculateDebt(Float shareSpent, Float spentAlreadyPaid, Float depositDone, Float allDeposits) {
+    public Float calculateDebt(Float shareSpent, Float spentAlreadyPaid, Float depositDone, Float allDeposits, Float partialRepayment) {
         log.info("Calculating debt...");
         if(allDeposits == null) {
             allDeposits = 0f;
@@ -314,7 +330,7 @@ public class UserBusiness implements UserIBusiness {
         if (shareSpent == null) {
             shareSpent = 0f;
         }
-        Float debt = (shareSpent - (spentAlreadyPaid - depositDone)) - depositDone + (allDeposits - depositDone);
+        Float debt = ((shareSpent - (spentAlreadyPaid - depositDone)) - depositDone + (allDeposits - depositDone)) - partialRepayment;
         return debt;
     }
 }

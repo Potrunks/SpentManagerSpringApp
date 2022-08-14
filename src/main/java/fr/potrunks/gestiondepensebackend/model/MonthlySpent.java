@@ -13,6 +13,7 @@ public class MonthlySpent {
     private String nameMonthlySpent;
     private String commentMonthlySpent;
     private Long idSpentCategorySelected;
+    private String nameMonthlySpentCategory;
     private Boolean isActive;
     private Long idUserCreator;
 }

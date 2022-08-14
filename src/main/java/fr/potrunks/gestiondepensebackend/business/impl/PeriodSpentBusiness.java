@@ -70,6 +70,7 @@ public class PeriodSpentBusiness implements PeriodSpentIBusiness {
                             monthlySpentEntity.getNameMonthlySpent(),
                             monthlySpentEntity.getCommentMonthlySpent(),
                             monthlySpentEntity.getSpentCategoryEntity().getIdSpentCategory(),
+                            monthlySpentEntity.getSpentCategoryEntity().getNameSpentCategory(),
                             monthlySpentEntity.getIsActive(),
                             monthlySpentEntity.getUserEntity().getIdUser()
                     )).collect(Collectors.toList());

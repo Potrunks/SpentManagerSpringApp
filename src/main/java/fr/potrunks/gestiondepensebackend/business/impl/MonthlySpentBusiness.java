@@ -134,6 +134,7 @@ public class MonthlySpentBusiness extends BusinessUtils implements IMonthlySpent
                 monthlySpent.getNameMonthlySpent(),
                 monthlySpent.getCommentMonthlySpent(),
                 monthlySpent.getSpentCategoryEntity().getIdSpentCategory(),
+                monthlySpent.getSpentCategoryEntity().getNameSpentCategory(),
                 monthlySpent.getIsActive(),
                 monthlySpent.getUserEntity().getIdUser()
         )).collect(Collectors.toList());

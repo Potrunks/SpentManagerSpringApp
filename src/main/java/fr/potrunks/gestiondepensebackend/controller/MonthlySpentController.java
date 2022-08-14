@@ -55,7 +55,7 @@ public class MonthlySpentController {
      * @param userConnected
      * @return List of monthly spent of the user connected
      */
-    @GetMapping("/getAll/byUserConnected")
+    @PostMapping("/getAll/byUserConnected")
     public ResponseEntity<List<MonthlySpent>> fetchAllByUser(@RequestBody User userConnected) {
         List<MonthlySpent> result = monthlySpentBusiness.getAllByIdUser(userConnected.getIdUser());
         return ResponseEntity.ok(result);

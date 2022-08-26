@@ -57,13 +57,14 @@ public class TestUtils implements ITestUtils {
     }
 
     @Override
-    public MonthlySpent createMonthlySpentModelForTest(Float newValue, String newName, String newComment, Long newIdSpentCategory, Boolean isActive, Long newIdUser) {
+    public MonthlySpent createMonthlySpentModelForTest(Float newValue, String newName, String newComment, Long newIdSpentCategory, String newNameMonthlySpentCategory, Boolean isActive, Long newIdUser) {
         return new MonthlySpent(
                 null,
                 newValue,
                 newName,
                 newComment,
                 newIdSpentCategory,
+                newNameMonthlySpentCategory,
                 isActive,
                 newIdUser
         );
@@ -84,13 +85,14 @@ public class TestUtils implements ITestUtils {
     }
 
     @Override
-    public MonthlySpent modifyMonthlySpentModelForTest(Long idMonthlySpentToModify, Float modifyValue, String modifyName, String modifyComment, Long modifyIdSpentCategory, Boolean isActive, Long idUser) {
+    public MonthlySpent modifyMonthlySpentModelForTest(Long idMonthlySpentToModify, Float modifyValue, String modifyName, String modifyComment, Long modifyIdSpentCategory, String modifyNameMonthlySpentCategory, Boolean isActive, Long idUser) {
         return new MonthlySpent(
                 idMonthlySpentToModify,
                 modifyValue,
                 modifyName,
                 modifyComment,
                 modifyIdSpentCategory,
+                modifyNameMonthlySpentCategory,
                 isActive,
                 idUser
         );
@@ -102,6 +104,7 @@ public class TestUtils implements ITestUtils {
         BeanUtils.copyProperties(monthlySpentEntityToConvert, monthlySpent);
         monthlySpent.setIdSpentCategorySelected(monthlySpentEntityToConvert.getSpentCategoryEntity().getIdSpentCategory());
         monthlySpent.setIdUserCreator(monthlySpentEntityToConvert.getUserEntity().getIdUser());
+        monthlySpent.setNameMonthlySpentCategory(monthlySpentEntityToConvert.getSpentCategoryEntity().getNameSpentCategory());
         return monthlySpent;
     }
 }

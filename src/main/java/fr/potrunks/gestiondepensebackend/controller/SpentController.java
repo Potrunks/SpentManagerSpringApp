@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +55,9 @@ public class SpentController {
             if (spentCategorySelected.getIdSpentCategory() != null) {
                 periodSpentInProgress = periodSpentIBusiness.findInProgress();
                 if (periodSpentInProgress != null) {
-                    HashMap<SpentCategoryEntity, Spent> spentCategoryEntitySpentHashMap = new HashMap<>();
-                    spentCategoryEntitySpentHashMap.put(spentCategorySelected, spent);
-                    newSpentList = spentBusiness.create(userExpenser, periodSpentInProgress, spentCategoryEntitySpentHashMap);
+                    List<Spent> spentList = new ArrayList<>();
+                    spentList.add(spent);
+                    newSpentList = spentBusiness.create(userExpenser, periodSpentInProgress, spentList);
                     if (newSpentList.get(0).getIdSpent() != null) {
                         newSpentAdded = true;
                         log.info("New spent created successfully");

@@ -25,9 +25,12 @@ public class GestionDepenseBackendApplication {
 			log.warn("Start launch all running method...");
 
 			accountFactory.AdministratorAccountFabricator("Alexis", "ARRIAL", "potrunks@hotmail.com", "Trunks92!");
+			accountFactory.NoAdminAccountFabricator("Valerie", "PAUCHET", "val_chan@hotmail.com", "Trunks92!");
 
 			List<String> spentCategoryNameListToAdd = new ArrayList<>();
 			spentCategoryNameListToAdd.add("Remboursement partiel");
+			spentCategoryNameListToAdd.add("Catégorie Test");
+			spentCategoryNameListToAdd.add("Avance");
 			spentCategoryFactory.SpentCategoryFabricator(spentCategoryNameListToAdd);
 
 			log.warn("End of all running method");

@@ -27,4 +27,17 @@ public class AccountFactory implements IAccountFactory {
         }
         log.warn("End process administrator account creation !!!");
     }
+
+    @Override
+    public void NoAdminAccountFabricator(String firstName, String lastName, String mail, String password) {
+        log.warn("Start process administrator account creation...");
+        Boolean success = false;
+        success = accountBusiness.createNormalAccount(firstName, lastName, mail, password);
+        if (success == true) {
+            log.warn("Normal account creation process succeeded");
+        } else {
+            log.error("Normal account creation process failed");
+        }
+        log.warn("End process administrator account creation !!!");
+    }
 }

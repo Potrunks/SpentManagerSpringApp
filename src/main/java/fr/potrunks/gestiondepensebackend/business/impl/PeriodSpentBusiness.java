@@ -58,22 +58,8 @@ public class PeriodSpentBusiness implements PeriodSpentIBusiness {
                 periodSpentAdded = true;
                 response.put("idPeriodSpentCreated", periodSpentEntity.getIdPeriodSpent());
                 log.info("New spending period added successfully");
-                log.info("Verify if Monthly Spent Entity active exist for User id {}", idUserAddingPeriodSpent);
-                List<MonthlySpentEntity> monthlySpentEntityList = monthlySpentRepository.findByUserEntityAndIsActiveTrue(userEntity);
-                if (monthlySpentEntityList == null){
-                    log.info("User id {} have no monthly spent active", idUserAddingPeriodSpent);
-                } else {
-                    log.info("Add monthly spent active to the new period spent id {} in progress...", periodSpentEntity.getIdPeriodSpent());
-                    List<MonthlySpent> monthlySpentList = monthlySpentEntityList.stream().map(monthlySpentEntity -> new MonthlySpent(
-                            monthlySpentEntity.getIdMonthlySpent(),
-                            monthlySpentEntity.getValueMonthlySpent(),
-                            monthlySpentEntity.getNameMonthlySpent(),
-                            monthlySpentEntity.getCommentMonthlySpent(),
-                            monthlySpentEntity.getSpentCategoryEntity().getIdSpentCategory(),
-                            monthlySpentEntity.getSpentCategoryEntity().getNameSpentCategory(),
-                            monthlySpentEntity.getIsActive(),
-                            monthlySpentEntity.getUserEntity().getIdUser()
-                    )).collect(Collectors.toList());
+                List<MonthlySpent> monthlySpentList = monthlySpentBusiness.getAllMonthlySpentActiveByUser(userEntity, periodSpentEntity);
+                if (monthlySpentList != null) {
                     monthlySpentBusiness.becomeSpent(monthlySpentList, idUserAddingPeriodSpent);
                 }
             } else {

@@ -43,10 +43,10 @@ public interface SpentIBusiness {
      * Set a new spent and add it to the database
      * @param userConnected User who wants to add the spent
      * @param periodSpentInProgress Period spent in progress to attach the spent
-     * @param spentCategoryEntityKeySpentValuePairMap
+     * @param newSpentList
      * @return Return a Spent Entity after added in database
      */
-    List<SpentEntity> create(UserEntity userConnected, PeriodSpentEntity periodSpentInProgress, HashMap<SpentCategoryEntity, Spent> spentCategoryEntityKeySpentValuePairMap);
+    List<SpentEntity> create(UserEntity userConnected, PeriodSpentEntity periodSpentInProgress, List<Spent> newSpentList);
 
     /**
      * Get all spents in period spent id wanted

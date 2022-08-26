@@ -1,9 +1,11 @@
 package fr.potrunks.gestiondepensebackend.business.impl;
 
+import fr.potrunks.gestiondepensebackend.business.IMonthlySpentBusiness;
 import fr.potrunks.gestiondepensebackend.business.SalaryIBusiness;
 import fr.potrunks.gestiondepensebackend.entity.PeriodSpentEntity;
 import fr.potrunks.gestiondepensebackend.entity.SalaryEntity;
 import fr.potrunks.gestiondepensebackend.entity.UserEntity;
+import fr.potrunks.gestiondepensebackend.model.MonthlySpent;
 import fr.potrunks.gestiondepensebackend.model.Salary;
 import fr.potrunks.gestiondepensebackend.repository.PeriodSpentIRepository;
 import fr.potrunks.gestiondepensebackend.repository.SalaryIRepository;
@@ -27,6 +29,9 @@ public class SalaryBusiness implements SalaryIBusiness {
     private UserIRepository userRepository;
     @Autowired
     private SalaryIRepository salaryRepository;
+
+    @Autowired
+    private IMonthlySpentBusiness monthlySpentBusiness;
 
     @Override
     public Map<String, Object> addNewSalary(Long idUserConnected, Long idPeriodSpentCreated, Float salaryInput, Map<String, Object> response) {
@@ -88,6 +93,10 @@ public class SalaryBusiness implements SalaryIBusiness {
             salaryRepository.save(salaryEntity);
             salaryCreatedOrUpdated = true;
             log.info("Salary updated");
+        }
+        List<MonthlySpent> monthlySpentList = monthlySpentBusiness.getAllMonthlySpentActiveByUser(userEntity, periodSpentEntity);
+        if (monthlySpentList != null) {
+            monthlySpentBusiness.becomeSpent(monthlySpentList, userEntity.getIdUser());
         }
         response.put("salaryCreatedOrUpdated", salaryCreatedOrUpdated);
         return response;

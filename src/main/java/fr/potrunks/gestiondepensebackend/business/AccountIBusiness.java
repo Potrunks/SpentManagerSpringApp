@@ -50,4 +50,13 @@ public interface AccountIBusiness {
      * @param password Password of the user
      */
     Boolean createAdminAccount(String firstName, String lastName, String mail, String password);
+
+    /**
+     * Create normal account
+     * @param firstName
+     * @param lastName
+     * @param mail
+     * @param password
+     */
+    Boolean createNormalAccount(String firstName, String lastName, String mail, String password);
 }

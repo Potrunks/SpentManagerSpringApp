@@ -51,7 +51,7 @@ public class SpentBusiness implements SpentIBusiness {
                         spent.getUserEntity().getFirstNameUser(),
                         null,
                         spent.getSpentCategoryEntity().getNameSpentCategory(),
-                        spent.getMonthlySpentEntity().getIdMonthlySpent()
+                        spent.getMonthlySpentEntity() != null ? spent.getMonthlySpentEntity().getIdMonthlySpent() : null
                 ))
                 .collect(Collectors.toList());
         return spents;
@@ -91,7 +91,7 @@ public class SpentBusiness implements SpentIBusiness {
     }
 
     @Override
-    public List<SpentEntity> create(UserEntity userConnected, PeriodSpentEntity periodSpentInProgress, HashMap<SpentCategoryEntity, Spent> spentCategoryEntityKeySpentValuePairMap) {
+    public List<SpentEntity> create(UserEntity userConnected, PeriodSpentEntity periodSpentInProgress, List<Spent> newSpentList) {
         if (!userInPeriodSpentIsPresent(userConnected, periodSpentInProgress)) {
             log.warn("The user id {} is not present in period spent id {}", userConnected.getIdUser(), periodSpentInProgress.getIdPeriodSpent());
             saveSalary(createSalaryZeroValue(userConnected, periodSpentInProgress));
@@ -99,17 +99,17 @@ public class SpentBusiness implements SpentIBusiness {
         }
         log.info("Set up new spent in progress...");
         List<SpentEntity> spentEntityList = new ArrayList<>();
-        for (Map.Entry<SpentCategoryEntity, Spent> spentCategoryEntityKeySpentValuePair : spentCategoryEntityKeySpentValuePairMap.entrySet()) {
+        for (Spent spent : newSpentList) {
             SpentEntity spentEntity = new SpentEntity();
-            spentEntity.setValueSpent(spentCategoryEntityKeySpentValuePair.getValue().getValueSpent());
+            spentEntity.setValueSpent(spent.getValueSpent());
             spentEntity.setDateSpent(LocalDate.now());
-            spentEntity.setNameSpent(formatSpentName(spentCategoryEntityKeySpentValuePair.getValue()));
-            spentEntity.setCommentSpent(spentCategoryEntityKeySpentValuePair.getValue().getCommentSpent());
-            spentEntity.setSpentCategoryEntity(spentCategoryEntityKeySpentValuePair.getKey());
+            spentEntity.setNameSpent(formatSpentName(spent));
+            spentEntity.setCommentSpent(spent.getCommentSpent());
+            spentEntity.setSpentCategoryEntity(spentCategoryIRepository.getById(spent.getIdSpentCategorySelected()));
             spentEntity.setUserEntity(userConnected);
             spentEntity.setPeriodSpentEntity(periodSpentInProgress);
-            if (spentCategoryEntityKeySpentValuePair.getValue().getIdMonthlySpent() != null) {
-                spentEntity.setMonthlySpentEntity(monthlySpentRepository.getById(spentCategoryEntityKeySpentValuePair.getValue().getIdMonthlySpent()));
+            if (spent.getIdMonthlySpent() != null) {
+                spentEntity.setMonthlySpentEntity(monthlySpentRepository.getById(spent.getIdMonthlySpent()));
             } else {
                 spentEntity.setMonthlySpentEntity(null);
             }

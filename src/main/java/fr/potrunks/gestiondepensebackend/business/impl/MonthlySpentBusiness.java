@@ -172,7 +172,7 @@ public class MonthlySpentBusiness extends BusinessUtils implements IMonthlySpent
             log.warn("Monthly spent must not be null");
             return "Impossible d'ajouter la dépense mensuelle aux dépenses";
         }
-        HashMap<SpentCategoryEntity, Spent> spentCategoryEntitySpentHashMap = new HashMap<>();
+        List<Spent> newSpentList = new ArrayList<>();
         PeriodSpentEntity periodSpentInProgress = periodSpentRepository.findByEndDatePeriodSpentIsNull();
         for (MonthlySpent monthlySpent : monthlySpentToSpentifyList) {
             log.info("Transform monthly spent id {} in spent in progress...", monthlySpent.getIdMonthlySpent());
@@ -192,18 +192,18 @@ public class MonthlySpentBusiness extends BusinessUtils implements IMonthlySpent
                         null,
                         null,
                         null,
-                        null,
+                        spentCategoryEntity.getIdSpentCategory(),
                         null,
                         monthlySpent.getIdMonthlySpent()
                 );
-                spentCategoryEntitySpentHashMap.put(spentCategoryEntity, newSpent);
+                newSpentList.add(newSpent);
             } else {
                 log.warn("Monthly spent id {} already exist in data base", monthlySpent.getIdMonthlySpent());
             }
         }
         List<SpentEntity> newSpentEntityList = new ArrayList<>();
         try {
-            newSpentEntityList = spentBusiness.create(userTransformingMonthlySpentToSpent, periodSpentInProgress, spentCategoryEntitySpentHashMap);
+            newSpentEntityList = spentBusiness.create(userTransformingMonthlySpentToSpent, periodSpentInProgress, newSpentList);
         } catch (Exception e) {
             log.warn("Error during transformation of monthly spent id in spent");
             log.warn(e.getMessage());
@@ -217,5 +217,29 @@ public class MonthlySpentBusiness extends BusinessUtils implements IMonthlySpent
             return null;
         }
         return "Une erreur est survenue pendant l'ajout de la dépense mensuelle";
+    }
+
+    @Override
+    public List<MonthlySpent> getAllMonthlySpentActiveByUser(UserEntity userEntity, PeriodSpentEntity periodSpentEntityInProgress) {
+        log.info("Verify if Monthly Spent Entity active exist for User id {}", userEntity.getIdUser());
+        List<MonthlySpent> monthlySpentList;
+        List<MonthlySpentEntity> monthlySpentEntityList = monthlySpentRepository.findByUserEntityAndIsActiveTrue(userEntity);
+        if (monthlySpentEntityList == null) {
+            log.info("User id {} have no monthly spent active", userEntity.getIdUser());
+            return null;
+        } else {
+            log.info("Add monthly spent active to the new period spent id {} in progress...", periodSpentEntityInProgress.getIdPeriodSpent());
+            monthlySpentList = monthlySpentEntityList.stream().map(monthlySpentEntity -> new MonthlySpent(
+                    monthlySpentEntity.getIdMonthlySpent(),
+                    monthlySpentEntity.getValueMonthlySpent(),
+                    monthlySpentEntity.getNameMonthlySpent(),
+                    monthlySpentEntity.getCommentMonthlySpent(),
+                    monthlySpentEntity.getSpentCategoryEntity().getIdSpentCategory(),
+                    monthlySpentEntity.getSpentCategoryEntity().getNameSpentCategory(),
+                    monthlySpentEntity.getIsActive(),
+                    monthlySpentEntity.getUserEntity().getIdUser()
+            )).collect(Collectors.toList());
+            return monthlySpentList;
+        }
     }
 }

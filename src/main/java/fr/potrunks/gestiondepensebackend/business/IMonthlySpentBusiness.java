@@ -1,5 +1,7 @@
 package fr.potrunks.gestiondepensebackend.business;
 
+import fr.potrunks.gestiondepensebackend.entity.PeriodSpentEntity;
+import fr.potrunks.gestiondepensebackend.entity.UserEntity;
 import fr.potrunks.gestiondepensebackend.model.MonthlySpent;
 
 import java.util.List;
@@ -49,4 +51,11 @@ public interface IMonthlySpentBusiness {
      * @return Error message if there is a problem during the transformation
      */
     String becomeSpent(List<MonthlySpent> monthlySpentToSpentifyList, Long idUserCreatingSpent);
+
+    /**
+     * Get all monthly spent active by user wanted
+     * @param userEntity
+     * @return List of monthly spent
+     */
+    List<MonthlySpent> getAllMonthlySpentActiveByUser(UserEntity userEntity, PeriodSpentEntity periodSpentEntityInProgress);
 }

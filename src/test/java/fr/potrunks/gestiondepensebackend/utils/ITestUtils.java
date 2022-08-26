@@ -38,7 +38,7 @@ public interface ITestUtils {
      * @param newIdUser
      * @return Monthly Spent Model for test
      */
-    MonthlySpent createMonthlySpentModelForTest(Float newValue, String newName, String newComment, Long newIdSpentCategory, Boolean isActive, Long newIdUser);
+    MonthlySpent createMonthlySpentModelForTest(Float newValue, String newName, String newComment, Long newIdSpentCategory, String newNameMonthlySpentCategory, Boolean isActive, Long newIdUser);
 
     /**
      * Create Monthly Spent Entity for test
@@ -63,7 +63,7 @@ public interface ITestUtils {
      * @param idUser
      * @return Modified Monthly Spent Model for test
      */
-    MonthlySpent modifyMonthlySpentModelForTest(Long idMonthlySpentToModify, Float modifyValue, String modifyName, String modifyComment, Long modifyIdSpentCategory, Boolean isActive, Long idUser);
+    MonthlySpent modifyMonthlySpentModelForTest(Long idMonthlySpentToModify, Float modifyValue, String modifyName, String modifyComment, Long modifyIdSpentCategory, String modifyNameMonthlySpentCategory, Boolean isActive, Long idUser);
 
     /**
      * Change a monthly spent entity into a model

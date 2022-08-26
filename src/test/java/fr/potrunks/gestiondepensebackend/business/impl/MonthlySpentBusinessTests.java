@@ -52,6 +52,7 @@ public class MonthlySpentBusinessTests extends TestUtils {
                 "Entretien Enclos TRex",
                 "J'ai dépensé sans compter",
                 newSpentCategoryForTest.getIdSpentCategory(),
+                newSpentCategoryForTest.getNameSpentCategory(),
                 true,
                 userConnected.getIdUser()
         );
@@ -79,6 +80,7 @@ public class MonthlySpentBusinessTests extends TestUtils {
                 "Dommage et interet accident parc",
                 "Les raptors ont bouffé tout le monde",
                 monthlySpentOrigin.getSpentCategoryEntity().getIdSpentCategory(),
+                monthlySpentOrigin.getSpentCategoryEntity().getNameSpentCategory(),
                 monthlySpentOrigin.getIsActive(),
                 userConnected.getIdUser());
         String result = monthlySpentBusiness.updateMonthlySpent(monthlySpentModified);
@@ -102,6 +104,7 @@ public class MonthlySpentBusinessTests extends TestUtils {
                 "Dommage et interet accident parc",
                 "Les raptors ont bouffé tout le monde",
                 monthlySpentOrigin.getSpentCategoryEntity().getIdSpentCategory(),
+                monthlySpentOrigin.getSpentCategoryEntity().getNameSpentCategory(),
                 monthlySpentOrigin.getIsActive(),
                 userConnected.getIdUser());
         monthlySpentBusiness.updateMonthlySpent(monthlySpentModified);

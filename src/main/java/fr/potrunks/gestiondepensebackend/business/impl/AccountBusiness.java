@@ -120,6 +120,28 @@ public class AccountBusiness implements AccountIBusiness {
         return true;
     }
 
+    @Override
+    public Boolean createNormalAccount(String firstName, String lastName, String mail, String password) {
+        log.warn("Normal User Setup...");
+        if (userRepository.findByMailUser(mail) == null) {
+            UserEntity normalUser = new UserEntity();
+            normalUser.setFirstNameUser(formatFirstName(firstName));
+            normalUser.setLastNameUser(formatLastName(lastName));
+            normalUser.setMailUser(mail);
+            normalUser.setSaltUser(saltGenerator());
+            normalUser.setPasswordUser(hashedPassword(password + normalUser.getSaltUser()));
+            normalUser.setAdministrator(false);
+            normalUser = userRepository.save(normalUser);
+            if (normalUser.getIdUser() == null) {
+                log.error("Error during creation of normal User");
+                return false;
+            }
+            log.warn("normal User created");
+            return true;
+        }
+        return true;
+    }
+
     /**
      * Verify if the mail already exist in data base
      * @param mailUser Mail concerned

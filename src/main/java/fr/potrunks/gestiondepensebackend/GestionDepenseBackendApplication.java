@@ -24,6 +24,7 @@ public class GestionDepenseBackendApplication {
 		return args -> {
 			log.warn("Start launch all running method...");
 
+			/*
 			accountFactory.AdministratorAccountFabricator("Alexis", "ARRIAL", "potrunks@hotmail.com", "Trunks92!");
 			accountFactory.NoAdminAccountFabricator("Valerie", "PAUCHET", "val_chan@hotmail.com", "Trunks92!");
 
@@ -32,6 +33,7 @@ public class GestionDepenseBackendApplication {
 			spentCategoryNameListToAdd.add("Catégorie Test");
 			spentCategoryNameListToAdd.add("Avance");
 			spentCategoryFactory.SpentCategoryFabricator(spentCategoryNameListToAdd);
+			*/
 
 			log.warn("End of all running method");
 		};

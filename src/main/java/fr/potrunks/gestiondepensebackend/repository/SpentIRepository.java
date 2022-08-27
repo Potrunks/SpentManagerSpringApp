@@ -56,4 +56,9 @@ public interface SpentIRepository extends JpaRepository<SpentEntity, Long> {
      * @return A spent entity with the criteria or null if not found
      */
     SpentEntity findByPeriodSpentEntityAndMonthlySpentEntity(PeriodSpentEntity periodSpentEntity, MonthlySpentEntity monthlySpentEntity);
+
+    /**
+     * Find all spent who are monthly spent at the origin
+     */
+    List<SpentEntity> findByMonthlySpentEntity(MonthlySpentEntity monthlySpentEntity);
 }

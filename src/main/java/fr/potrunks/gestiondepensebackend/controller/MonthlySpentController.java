@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = {"http://localhost:3000", "https://spent-manager-react-app.herokuapp.com/"})
@@ -41,12 +42,11 @@ public class MonthlySpentController {
 
     /**
      * Delete monthly spent
-     * @param monthlySpentToDelete
      * @return ResponseEntity with the success result
      */
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMonthlySpent(@RequestBody MonthlySpent monthlySpentToDelete) {
-        String error = monthlySpentBusiness.deleteMonthlySpentById(monthlySpentToDelete.getIdMonthlySpent());
+    @DeleteMapping("/delete/{idMonthlySpent}")
+    public ResponseEntity<String> deleteMonthlySpent(@PathVariable Long idMonthlySpent) {
+        String error = monthlySpentBusiness.deleteMonthlySpentById(idMonthlySpent);
         return ResponseEntity.ok(error);
     }
 
@@ -63,24 +63,23 @@ public class MonthlySpentController {
 
     /**
      * Fetch one monthly spent
-     * @param monthlySpentToFetch
      * @return Monthly spent wanted
      */
-    @GetMapping("/getOne")
-    public ResponseEntity<MonthlySpent> fetchOne(@RequestBody MonthlySpent monthlySpentToFetch) {
-        MonthlySpent result = monthlySpentBusiness.getById(monthlySpentToFetch.getIdMonthlySpent());
+    @GetMapping("/getOne/{idMonthlySpent}")
+    public ResponseEntity<MonthlySpent> fetchOne(@PathVariable Long idMonthlySpent) {
+        MonthlySpent result = monthlySpentBusiness.getById(idMonthlySpent);
         return ResponseEntity.ok(result);
     }
 
     /**
      * Transform monthly spent into a spent in order to add into DataBase
-     * @param monthlySpentToTransformList
-     * @param userTransformingMonthlySpent
-     * @return ResponseEntity with the success result
      */
-    @PostMapping("/transformInto/spent")
-    public ResponseEntity<String> transformIntoSpent(@RequestBody List<MonthlySpent> monthlySpentToTransformList, @RequestBody User userTransformingMonthlySpent) {
-        String error = monthlySpentBusiness.becomeSpent(monthlySpentToTransformList, userTransformingMonthlySpent.getIdUser());
+    @PostMapping("/transformInto/spent/{idUserConnected}/{idMonthlySpentToTransform}")
+    public ResponseEntity<String> transformIntoSpent(@PathVariable Long idMonthlySpentToTransform, @PathVariable Long idUserConnected) {
+        List<MonthlySpent> monthlySpentToTransformList = new ArrayList<>();
+        MonthlySpent monthlySpentToTransform = monthlySpentBusiness.getById(idMonthlySpentToTransform);
+        monthlySpentToTransformList.add(monthlySpentToTransform);
+        String error = monthlySpentBusiness.becomeSpent(monthlySpentToTransformList, idUserConnected);
         return ResponseEntity.ok(error);
     }
 }

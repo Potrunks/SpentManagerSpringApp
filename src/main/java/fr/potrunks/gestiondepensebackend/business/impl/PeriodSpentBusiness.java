@@ -1,23 +1,27 @@
 package fr.potrunks.gestiondepensebackend.business.impl;
 
+import fr.potrunks.gestiondepensebackend.business.IMonthlySpentBusiness;
 import fr.potrunks.gestiondepensebackend.business.PeriodSpentIBusiness;
+import fr.potrunks.gestiondepensebackend.entity.MonthlySpentEntity;
 import fr.potrunks.gestiondepensebackend.entity.PeriodSpentEntity;
 import fr.potrunks.gestiondepensebackend.entity.SalaryEntity;
 import fr.potrunks.gestiondepensebackend.entity.UserEntity;
+import fr.potrunks.gestiondepensebackend.model.MonthlySpent;
 import fr.potrunks.gestiondepensebackend.model.PeriodSpent;
+import fr.potrunks.gestiondepensebackend.repository.MonthlySpentIRepository;
 import fr.potrunks.gestiondepensebackend.repository.PeriodSpentIRepository;
 import fr.potrunks.gestiondepensebackend.repository.SalaryIRepository;
 import fr.potrunks.gestiondepensebackend.repository.UserIRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,6 +33,11 @@ public class PeriodSpentBusiness implements PeriodSpentIBusiness {
     private PeriodSpentIRepository periodSpentRepository;
     @Autowired
     private SalaryIRepository salaryRepository;
+    @Autowired
+    private MonthlySpentIRepository monthlySpentRepository;
+
+    @Autowired
+    private IMonthlySpentBusiness monthlySpentBusiness;
 
     @Override
     public Map<String, Object> addNewPeriodSpent(Long idUserAddingPeriodSpent, Map<String, Object> response) {
@@ -49,6 +58,10 @@ public class PeriodSpentBusiness implements PeriodSpentIBusiness {
                 periodSpentAdded = true;
                 response.put("idPeriodSpentCreated", periodSpentEntity.getIdPeriodSpent());
                 log.info("New spending period added successfully");
+                List<MonthlySpent> monthlySpentList = monthlySpentBusiness.getAllMonthlySpentActiveByUser(userEntity, periodSpentEntity);
+                if (monthlySpentList != null) {
+                    monthlySpentBusiness.becomeSpent(monthlySpentList, idUserAddingPeriodSpent);
+                }
             } else {
                 log.warn("Error during addition of new spending period");
             }

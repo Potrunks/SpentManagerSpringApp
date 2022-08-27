@@ -1,12 +1,16 @@
 package fr.potrunks.gestiondepensebackend.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "monthly_spent")
 public class MonthlySpentEntity {
     @Id
@@ -19,6 +23,8 @@ public class MonthlySpentEntity {
     private String nameMonthlySpent;
     @Column(name = "comment_monthly_spent")
     private String commentMonthlySpent;
+    @Column(name = "is_active")
+    private Boolean isActive;
     @ManyToOne
     @JoinColumn(name = "id_spent_category")
     private SpentCategoryEntity spentCategoryEntity;

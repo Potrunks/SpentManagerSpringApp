@@ -6,6 +6,7 @@ import fr.potrunks.gestiondepensebackend.entity.SpentEntity;
 import fr.potrunks.gestiondepensebackend.entity.UserEntity;
 import fr.potrunks.gestiondepensebackend.model.Spent;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface SpentIBusiness {
@@ -41,12 +42,11 @@ public interface SpentIBusiness {
     /**
      * Set a new spent and add it to the database
      * @param userConnected User who wants to add the spent
-     * @param spentCategorySelected Category of the spent
      * @param periodSpentInProgress Period spent in progress to attach the spent
-     * @param spent Spent with value, name and comment (this last is optional)
+     * @param newSpentList
      * @return Return a Spent Entity after added in database
      */
-    SpentEntity create(UserEntity userConnected, SpentCategoryEntity spentCategorySelected, PeriodSpentEntity periodSpentInProgress, Spent spent);
+    List<SpentEntity> create(UserEntity userConnected, PeriodSpentEntity periodSpentInProgress, List<Spent> newSpentList);
 
     /**
      * Get all spents in period spent id wanted

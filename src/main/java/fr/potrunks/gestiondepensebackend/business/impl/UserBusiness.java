@@ -120,7 +120,8 @@ public class UserBusiness implements UserIBusiness {
             user.setRateSpent(calculateRateSpent(user.getValueSalary(), user.getValueSpents()));
             Float householdShare = calculateHouseholdShare(sumSalaryHousehold(periodSpentEntity), user.getValueSalary());
             Float shareSpent = calculateShareSpent(sumSpentsDuringPeriodSpent(periodSpentEntity), householdShare);
-            user.setValueDebt(calculateDebt(shareSpent, user.getValueSpents(), calculateUserDepositDuringPeriodSpent(periodSpentEntity, userEntity), sumDepositsDuringPeriodSpent(periodSpentEntity)));
+            Float partialRepayment = null;
+            user.setValueDebt(calculateDebt(shareSpent, user.getValueSpents(), calculateUserDepositDuringPeriodSpent(periodSpentEntity, userEntity), sumDepositsDuringPeriodSpent(periodSpentEntity), partialRepayment));
             userList.add(user);
         }
         return userList;
@@ -290,14 +291,8 @@ public class UserBusiness implements UserIBusiness {
 
     /**
      * Calculate the debt
-     *
-     * @param shareSpent
-     * @param spentAlreadyPaid
-     * @param depositDone
-     * @param allDeposits
-     * @return Return a Float with debt value
      */
-    public Float calculateDebt(Float shareSpent, Float spentAlreadyPaid, Float depositDone, Float allDeposits) {
+    public Float calculateDebt(Float shareSpent, Float spentAlreadyPaid, Float depositDone, Float allDeposits, Float partialRepayment) {
         log.info("Calculating debt...");
         if(allDeposits == null) {
             allDeposits = 0f;

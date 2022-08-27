@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "https://spent-manager-react-app.herokuapp.com/")
+@CrossOrigin(origins = {"http://localhost:3000", "https://spent-manager-react-app.herokuapp.com/"})
 @RestController
 @RequestMapping("/spentmanager/user/")
 @Slf4j

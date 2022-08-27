@@ -37,7 +37,7 @@ public class AccountBusiness implements AccountIBusiness {
             userEntity.setLastNameUser(formatLastName(user.getLastNameUser()));
             userEntity.setSaltUser(saltGenerator());
             userEntity.setPasswordUser(hashedPassword(userEntity.getPasswordUser() + userEntity.getSaltUser()));
-            userEntity.setAdministrator(false);
+            userEntity.setAdministrator(user.getAdministrator());
             userEntity = userRepository.save(userEntity);
             log.info("New account User id {} successfully added", userEntity.getIdUser());
             newAccountAdded = true;
@@ -87,6 +87,59 @@ public class AccountBusiness implements AccountIBusiness {
         }
         response.put("already2Accounts", already2Accounts);
         return response;
+    }
+
+    @Override
+    public Boolean verifyAdministratorAccountExist() {
+        log.warn("Verification if administrator account already exist...");
+        UserEntity userToVerifyIfAdmin = userRepository.findByAdministratorTrue();
+        if (userToVerifyIfAdmin == null) {
+            log.warn("Administrator account don't exist !!!");
+            return false;
+        }
+        log.warn("Administrator account already existed !!!");
+        return true;
+    }
+
+    @Override
+    public Boolean createAdminAccount(String firstName, String lastName, String mail, String password) {
+        log.warn("Administrator User Setup...");
+        UserEntity adminUser = new UserEntity();
+        adminUser.setFirstNameUser(formatFirstName(firstName));
+        adminUser.setLastNameUser(formatLastName(lastName));
+        adminUser.setMailUser(mail);
+        adminUser.setSaltUser(saltGenerator());
+        adminUser.setPasswordUser(hashedPassword(password + adminUser.getSaltUser()));
+        adminUser.setAdministrator(true);
+        adminUser = userRepository.save(adminUser);
+        if (adminUser.getIdUser() == null) {
+            log.error("Error during creation of Administrator User");
+            return false;
+        }
+        log.warn("Administrator User created");
+        return true;
+    }
+
+    @Override
+    public Boolean createNormalAccount(String firstName, String lastName, String mail, String password) {
+        log.warn("Normal User Setup...");
+        if (userRepository.findByMailUser(mail) == null) {
+            UserEntity normalUser = new UserEntity();
+            normalUser.setFirstNameUser(formatFirstName(firstName));
+            normalUser.setLastNameUser(formatLastName(lastName));
+            normalUser.setMailUser(mail);
+            normalUser.setSaltUser(saltGenerator());
+            normalUser.setPasswordUser(hashedPassword(password + normalUser.getSaltUser()));
+            normalUser.setAdministrator(false);
+            normalUser = userRepository.save(normalUser);
+            if (normalUser.getIdUser() == null) {
+                log.error("Error during creation of normal User");
+                return false;
+            }
+            log.warn("normal User created");
+            return true;
+        }
+        return true;
     }
 
     /**

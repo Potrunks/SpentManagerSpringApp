@@ -14,11 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "https://spent-manager-react-app.herokuapp.com/")
+@CrossOrigin(origins = {"http://localhost:3000", "https://spent-manager-react-app.herokuapp.com/"})
 @RestController
 @RequestMapping("/spentmanager/spent/")
 @Slf4j
@@ -45,7 +46,7 @@ public class SpentController {
         UserEntity userExpenser;
         SpentCategoryEntity spentCategorySelected;
         PeriodSpentEntity periodSpentInProgress;
-        SpentEntity newSpent;
+        List<SpentEntity> newSpentList;
         Boolean newSpentAdded = false;
         Boolean periodSpentInProgressExist = true;
         userExpenser = userIBusiness.findById(spent.getIdUserExpenser());
@@ -54,8 +55,10 @@ public class SpentController {
             if (spentCategorySelected.getIdSpentCategory() != null) {
                 periodSpentInProgress = periodSpentIBusiness.findInProgress();
                 if (periodSpentInProgress != null) {
-                    newSpent = spentBusiness.create(userExpenser, spentCategorySelected, periodSpentInProgress, spent);
-                    if (newSpent.getIdSpent() != null) {
+                    List<Spent> spentList = new ArrayList<>();
+                    spentList.add(spent);
+                    newSpentList = spentBusiness.create(userExpenser, periodSpentInProgress, spentList);
+                    if (newSpentList.get(0).getIdSpent() != null) {
                         newSpentAdded = true;
                         log.info("New spent created successfully");
                     } else {

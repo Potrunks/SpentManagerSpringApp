@@ -72,12 +72,12 @@ class UserBusinessTests {
 
     @Test
     void withAllValue_returnCorrectDebtValue() {
-        assertEquals(1100f, userBusiness.calculateDebt(2000f, 1000f, 100f, 200f));
+        assertEquals(1100f, userBusiness.calculateDebt(2000f, 1000f, 100f, 200f, 0f));
     }
 
     @Test
     void spentAlreadyPaidValueGreaterThanShareSpent_returnDebtValueSmallerOrEqualThanZero() {
-        Float result = userBusiness.calculateDebt(2000f, 3000f, 0f, 0f);
+        Float result = userBusiness.calculateDebt(2000f, 3000f, 0f, 0f, 0f);
         Boolean expected = false;
         if (result <= 0f) {
             expected = true;
@@ -87,7 +87,7 @@ class UserBusinessTests {
 
     @Test
     void spentAlreadyPaidValueSmallerThanShareSpent_returnDebtValueGreaterThanZero() {
-        Float result = userBusiness.calculateDebt(2000f, 1000f, 0f, 0f);
+        Float result = userBusiness.calculateDebt(2000f, 1000f, 0f, 0f, 0f);
         Boolean expected = false;
         if (result > 0f) {
             expected = true;
@@ -97,16 +97,21 @@ class UserBusinessTests {
 
     @Test
     void allDepositsValueIsZero_returnCorrectDebtValue() {
-        assertEquals(1000f, userBusiness.calculateDebt(2000f, 1000f, 100f, 0f));
+        assertEquals(1000f, userBusiness.calculateDebt(2000f, 1000f, 100f, 0f, 0f));
     }
 
     @Test
     void shareSpentValueIsZero_returnCorrectDebtValue() {
-        assertEquals(-1000f, userBusiness.calculateDebt(0f, 1000f, 0f, 0f));
+        assertEquals(-1000f, userBusiness.calculateDebt(0f, 1000f, 0f, 0f, 0f));
     }
 
     @Test
     void oneOrMoreValueIsNull_returnCorrectDebtValue() {
-        assertEquals(2000f, userBusiness.calculateDebt(2000f, null, 100f, null));
+        assertEquals(2000f, userBusiness.calculateDebt(2000f, null, 100f, null, 0f));
+    }
+
+    @Test
+    void shouldReturnZeroValueDebt_WhenSumPartialRepaymentIsEqualToDebt() {
+        assertEquals(0f, userBusiness.calculateDebt(2000f, 1000f, 0f, 0f, 1000f));
     }
 }

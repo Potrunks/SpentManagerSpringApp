@@ -137,7 +137,7 @@ public class SpentBusiness implements SpentIBusiness {
                         spent.getUserEntity().getFirstNameUser(),
                         null,
                         spent.getSpentCategoryEntity().getNameSpentCategory(),
-                        spent.getMonthlySpentEntity().getIdMonthlySpent()
+                        spent.getMonthlySpentEntity() != null ? spent.getMonthlySpentEntity().getIdMonthlySpent() : null
                 ))
                 .collect(Collectors.toList());
         return spents;

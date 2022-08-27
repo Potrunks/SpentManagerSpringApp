@@ -103,6 +103,7 @@ public class MonthlySpentBusiness extends BusinessUtils implements IMonthlySpent
             log.warn("Monthly spent id {} don't found in database", idMonthlySpentToDelete);
             return "La dépense mensuelle n'existe pas dans la base de données";
         }
+        deleteAllConstraintInSpent(monthlySpentToDelete);
         try {
             monthlySpentRepository.delete(monthlySpentToDelete);
         } catch (Exception e) {
@@ -112,6 +113,18 @@ public class MonthlySpentBusiness extends BusinessUtils implements IMonthlySpent
         }
         log.info("Monthly spent id {} deleting successfully", idMonthlySpentToDelete);
         return null;
+    }
+
+    private void deleteAllConstraintInSpent(MonthlySpentEntity monthlySpentToRemoveFromSpentTable) {
+        log.info("Start to delete all constraint of monthly spent id {} from spent table in db", monthlySpentToRemoveFromSpentTable.getIdMonthlySpent());
+        List<SpentEntity> spentEntityToRemoveConstraintList = spentRepository.findByMonthlySpentEntity(monthlySpentToRemoveFromSpentTable);
+        if (spentEntityToRemoveConstraintList != null && spentEntityToRemoveConstraintList.size() != 0) {
+            for (SpentEntity spentToRemoveConstraint: spentEntityToRemoveConstraintList) {
+                spentToRemoveConstraint.setMonthlySpentEntity(null);
+                spentRepository.save(spentToRemoveConstraint);
+            }
+            log.info("All constraint removed");
+        }
     }
 
     @Override

@@ -120,32 +120,11 @@ public class UserBusiness implements UserIBusiness {
             user.setRateSpent(calculateRateSpent(user.getValueSalary(), user.getValueSpents()));
             Float householdShare = calculateHouseholdShare(sumSalaryHousehold(periodSpentEntity), user.getValueSalary());
             Float shareSpent = calculateShareSpent(sumSpentsDuringPeriodSpent(periodSpentEntity), householdShare);
-            Float partialRepayment = sumPartialRepayment(userEntity, periodSpentEntity);
+            Float partialRepayment = null;
             user.setValueDebt(calculateDebt(shareSpent, user.getValueSpents(), calculateUserDepositDuringPeriodSpent(periodSpentEntity, userEntity), sumDepositsDuringPeriodSpent(periodSpentEntity), partialRepayment));
             userList.add(user);
         }
         return userList;
-    }
-
-    /**
-     * Make the sum of all partial repayment made for the user
-     */
-    private Float sumPartialRepayment(UserEntity userEntity, PeriodSpentEntity periodSpentEntity) {
-        /**
-         * Get all repayment not from the user in the period spent
-         * Sum all
-         */
-
-        SpentCategoryEntity spentCategoryEntity = spentCategoryIRepository.findByNameSpentCategory("Remboursement partiel");
-        List<SpentEntity> spentEntityList = spentIRepository.findByUserEntityAndPeriodSpentEntityAndSpentCategoryEntity(userEntity, periodSpentEntity, spentCategoryEntity);
-        Float sum = 0f;
-        if (spentEntityList != null || spentEntityList.size() != 0) {
-            for (SpentEntity spentEntity:
-                 spentEntityList) {
-                sum += spentEntity.getValueSpent();
-            }
-        }
-        return sum;
     }
 
     /**
@@ -330,7 +309,7 @@ public class UserBusiness implements UserIBusiness {
         if (shareSpent == null) {
             shareSpent = 0f;
         }
-        Float debt = ((shareSpent - (spentAlreadyPaid - depositDone)) - depositDone + (allDeposits - depositDone)) - partialRepayment;
+        Float debt = (shareSpent - (spentAlreadyPaid - depositDone)) - depositDone + (allDeposits - depositDone);
         return debt;
     }
 }

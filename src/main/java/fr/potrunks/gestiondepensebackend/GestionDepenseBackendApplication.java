@@ -22,7 +22,7 @@ public class GestionDepenseBackendApplication {
 	@Bean
 	CommandLineRunner run(IAccountFactory accountFactory, ISpentCategoryFactory spentCategoryFactory) {
 		return args -> {
-			log.info("Spent Manager Back API v1.1.0");
+			log.info("Spent Manager Back API v1.1.1");
 			log.warn("Start launch all running method...");
 
 			/*

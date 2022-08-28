@@ -94,9 +94,11 @@ public class SalaryBusiness implements SalaryIBusiness {
             salaryCreatedOrUpdated = true;
             log.info("Salary updated");
         }
-        List<MonthlySpent> monthlySpentList = monthlySpentBusiness.getAllMonthlySpentActiveByUser(userEntity, periodSpentEntity);
-        if (monthlySpentList != null) {
-            monthlySpentBusiness.becomeSpent(monthlySpentList, userEntity.getIdUser());
+        if (salaryCreatedOrUpdated == true) {
+            List<MonthlySpent> monthlySpentList = monthlySpentBusiness.getAllMonthlySpentActiveByUser(userEntity, periodSpentEntity);
+            if (monthlySpentList != null) {
+                monthlySpentBusiness.becomeSpent(monthlySpentList, userEntity.getIdUser());
+            }
         }
         response.put("salaryCreatedOrUpdated", salaryCreatedOrUpdated);
         return response;

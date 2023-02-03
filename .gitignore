@@ -24,3 +24,6 @@ hs_err_pid*
 
 # Application Properties
 src/main/resources/application.properties
+
+# IntelliJ
+.idea/dbnavigator.xml

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,6 +25,9 @@ public class ShoppingItemEntity {
     @Column(name = "quantity")
     private Integer quantity;
 
-    @Column(name = "isBought")
+    @Column(name = "is_bought")
     private Boolean isBought;
+
+    @OneToMany(mappedBy = "shoppingItem", cascade = CascadeType.PERSIST)
+    private List<ShoppingItemLogEntity> log;
 }

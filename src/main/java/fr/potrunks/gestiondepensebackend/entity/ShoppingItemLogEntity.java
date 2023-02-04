@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -20,4 +17,8 @@ public class ShoppingItemLogEntity extends LogEntity {
 
     @Column(name = "action")
     private ShoppingItemLogAction action;
+
+    @ManyToOne
+    @JoinColumn(name = "shopping_item_id")
+    private ShoppingItemEntity shoppingItem;
 }
